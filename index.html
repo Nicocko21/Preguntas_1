@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Preguntas para Ori</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        #heartCanvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Preguntas para Ori</h1>
+        <div id="question"></div>
+        <input type="text" id="answer" placeholder="Escribe tu respuesta...">
+        <button id="submitBtn">Enviar respuesta</button>
+        <div id="result"></div>
+        <canvas id="heartCanvas" width="200" height="200"></canvas>
+    </div>
+
+    <script>
+        const questions = [
+            { question: '¿Cuál es el nombre de tu amorcito?', answer: 'Nicolas' },
+            { question: '¿Lo quieres mucho mucho?', answer: 'si mucho' }
+        ];
+
+        const questionElement = document.getElementById('question');
+        const answerInput = document.getElementById('answer');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultElement = document.getElementById('result');
+        const heartCanvas = document.getElementById('heartCanvas');
+        const heartContext = heartCanvas.getContext('2d');
+
+        let currentQuestionIndex = 0;
+
+        function displayQuestion(index) {
+            if (index < questions.length) {
+                const currentQuestion = questions[index];
+                questionElement.textContent = currentQuestion.question;
+                answerInput.value = '';  // Limpiar el campo de respuesta
+                resultElement.textContent = '';
+            } else {
+                questionElement.textContent = '';
+                answerInput.style.display = 'none';
+                submitBtn.style.display = 'none';
+                resultElement.innerHTML = '<textarea rows="6" cols="50">¡Felicidades, Nicolas te quiere más que tú a él!</textarea>';
+                heartCanvas.style.display = 'block';
+                drawHeart();
+            }
+        }
+
+        submitBtn.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim();
+            checkAnswer(userAnswer, questions[currentQuestionIndex].answer);
+        });
+
+        function checkAnswer(userAnswer, correctAnswer) {
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                resultElement.textContent = '¡Correcto!';
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            } else {
+                resultElement.textContent = 'Respuesta incorrecta. Inténtalo de nuevo/ piensa p chato.';
+            }
+        }
+
+        function drawHeart() {
+            const width = heartCanvas.width;
+            const height = heartCanvas.height;
+
+            heartContext.clearRect(0, 0, width, height);
+
+            heartContext.fillStyle = 'red';
+
+            const x = width / 2;
+            const y = height / 2 - 50;
+
+            heartContext.beginPath();
+            heartContext.moveTo(x, y + 20);
+            heartContext.bezierCurveTo(x + 70, y - 50, x + 150, y + 50, x, y + 150);
+            heartContext.bezierCurveTo(x - 150, y + 50, x - 70, y - 50, x, y + 20);
+            heartContext.closePath();
+
+            heartContext.fill();
+        }
+
+        displayQuestion(currentQuestionIndex);
+
+    </script>
+</body>
+</html>
